@@ -1,19 +1,30 @@
-import utils.DBConnection;
+import ui.AssignPanel;
+import ui.DriverPanel;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Testing FastTrack Logistics Database Connection...");
-        try (Connection conn = DBConnection.getConnection()) {
-            if (conn != null && !conn.isClosed()) {
-                System.out.println("Successfully connected to MySQL database!");
-            } else {
-                System.err.println("Connection object is null or closed.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Database connection failed: " + e.getMessage());
-        }
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("FastTrack Logistics - Management Dashboard");
+
+            // Create tabbed pane
+            JTabbedPane tabbedPane = new JTabbedPane();
+
+            // Add Driver Management Tab
+            DriverPanel driverPanel = new DriverPanel();
+            tabbedPane.addTab("Driver Management", driverPanel.getRootPanel());
+
+            // Add Assign Driver to Shipment Tab
+            AssignPanel assignPanel = new AssignPanel();
+            tabbedPane.addTab("Assign Driver", assignPanel.getRootPanel());
+
+            // Set up the frame
+            frame.setContentPane(tabbedPane);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(800, 500);
+            frame.setLocationRelativeTo(null); // center the window
+            frame.setVisible(true);
+        });
     }
 }
