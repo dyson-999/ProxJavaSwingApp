@@ -54,4 +54,9 @@ public class AssignController {
         }
         return success;
     }
+
+    public List<Shipment> getShipments() {
+        ShipmentDAO shipmentDAO = new ShipmentDAO();
+        return shipmentDAO.getAllShipments();
+    }
 }

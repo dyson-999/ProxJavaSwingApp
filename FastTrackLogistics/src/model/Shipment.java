@@ -28,6 +28,14 @@ public class Shipment {
         this.updatedAt = updatedAt;
     }
 
+    // Minimal constructor for assignment table display
+    public Shipment(int shipmentId, String senderName, String receiverName, String status) {
+        this.shipmentId = shipmentId;
+        this.senderName = senderName;
+        this.receiverName = receiverName;
+        this.status = status;
+    }
+
     // Empty constructor
     public Shipment() {}
 
@@ -104,19 +112,9 @@ public class Shipment {
         this.updatedAt = updatedAt;
     }
 
-    // Optional: toString() for debugging
+    // Simplified toString for display in combo boxes (if needed)
     @Override
     public String toString() {
-        return "Shipment{" +
-                "shipmentId=" + shipmentId +
-                ", senderName='" + senderName + '\'' +
-                ", senderAddress='" + senderAddress + '\'' +
-                ", receiverName='" + receiverName + '\'' +
-                ", receiverAddress='" + receiverAddress + '\'' +
-                ", contents='" + contents + '\'' +
-                ", status='" + status + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+        return "Shipment #" + shipmentId + " | " + senderName + " → " + receiverName + " (" + status + ")";
     }
 }
