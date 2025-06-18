@@ -19,6 +19,16 @@ public class Main {
             AssignPanel assignPanel = new AssignPanel();
             tabbedPane.addTab("Assign Driver", assignPanel.getRootPanel());
 
+            // Add listener to refresh driver list when Assign Driver tab is selected
+            tabbedPane.addChangeListener(e -> {
+                int selectedIndex = tabbedPane.getSelectedIndex();
+                String selectedTitle = tabbedPane.getTitleAt(selectedIndex);
+
+                if ("Assign Driver".equals(selectedTitle)) {
+                    assignPanel.reloadDrivers(); // Call reload method
+                }
+            });
+
             // Set up the frame
             frame.setContentPane(tabbedPane);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

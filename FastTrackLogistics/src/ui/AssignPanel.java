@@ -15,16 +15,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-
 public class AssignPanel extends JPanel {
     private JPanel rootPanel;
     private JTable shipmentTable;
     private JComboBox<Driver> driverComboBox;
     private JButton assignButton;
-    private JButton updateStatusButton;  // New button for status update
+    private JButton updateStatusButton;
 
     private AssignController assignController;
-    private Shipment selectedShipment; // Store selected shipment
+    private Shipment selectedShipment;
 
     private DefaultTableModel model;
 
@@ -35,27 +34,24 @@ public class AssignPanel extends JPanel {
         rootPanel = new JPanel(new BorderLayout(10, 10));
         rootPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        // === Title ===
         JLabel titleLabel = new JLabel("Assign Driver to Shipment", JLabel.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         rootPanel.add(titleLabel, BorderLayout.NORTH);
 
-        // === Shipment Table ===
         shipmentTable = new JTable();
         JScrollPane tableScrollPane = new JScrollPane(shipmentTable);
         rootPanel.add(tableScrollPane, BorderLayout.CENTER);
         populateShipmentTable();
 
-        // === Bottom Panel for Driver and Buttons ===
-        JPanel bottomPanel = new JPanel(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns
+        JPanel bottomPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         bottomPanel.add(new JLabel("Select Driver:"));
         driverComboBox = new JComboBox<>();
-        assignController.loadDrivers(driverComboBox);
+        assignController.loadDrivers(driverComboBox); // Initial load
         bottomPanel.add(driverComboBox);
 
-        bottomPanel.add(new JLabel(""));  // Empty cell for spacing
+        bottomPanel.add(new JLabel(""));
         assignButton = new JButton("Assign / Update Driver");
         assignButton.setBackground(new Color(46, 139, 87));
         assignButton.setForeground(Color.WHITE);
@@ -63,9 +59,9 @@ public class AssignPanel extends JPanel {
         assignButton.setFocusPainted(false);
         bottomPanel.add(assignButton);
 
-        bottomPanel.add(new JLabel(""));  // Empty cell for spacing
+        bottomPanel.add(new JLabel(""));
         updateStatusButton = new JButton("Update Status");
-        updateStatusButton.setBackground(new Color(70, 130, 180));  // Steel blue
+        updateStatusButton.setBackground(new Color(70, 130, 180));
         updateStatusButton.setForeground(Color.WHITE);
         updateStatusButton.setFont(new Font("Arial", Font.BOLD, 14));
         updateStatusButton.setFocusPainted(false);
@@ -74,7 +70,6 @@ public class AssignPanel extends JPanel {
         rootPanel.add(bottomPanel, BorderLayout.SOUTH);
         add(rootPanel);
 
-        // === Selection Listener ===
         shipmentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 int selectedRow = shipmentTable.getSelectedRow();
@@ -88,20 +83,18 @@ public class AssignPanel extends JPanel {
             }
         });
 
-        // === Assign Button Action ===
         assignButton.addActionListener((ActionEvent e) -> {
             Driver selectedDriver = (Driver) driverComboBox.getSelectedItem();
             if (selectedShipment != null && selectedDriver != null) {
                 boolean success = assignController.assignOrUpdateDriverAssignment(selectedShipment, selectedDriver);
                 if (success) {
-                    populateShipmentTable(); // Refresh table to reflect new/updated assignment
+                    populateShipmentTable();
                 }
             } else {
                 JOptionPane.showMessageDialog(rootPanel, "Please select a shipment and a driver.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // === Update Status Button Action ===
         updateStatusButton.addActionListener((ActionEvent e) -> {
             int selectedRow = shipmentTable.getSelectedRow();
             if (selectedRow < 0) {
@@ -116,14 +109,11 @@ public class AssignPanel extends JPanel {
 
             if (success) {
                 JOptionPane.showMessageDialog(rootPanel, "Assignment status updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                populateShipmentTable();  // Refresh to reflect update
+                populateShipmentTable();
             } else {
                 JOptionPane.showMessageDialog(rootPanel, "Failed to update assignment status.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        // === Remove previous direct TableModelListener updating assignment status ===
-        // Do NOT update on dropdown change anymore
     }
 
     private void populateShipmentTable() {
@@ -132,7 +122,7 @@ public class AssignPanel extends JPanel {
         model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5; // Only assignment status column editable
+                return column == 5; // Only assignment status column is editable
             }
         };
 
@@ -150,7 +140,6 @@ public class AssignPanel extends JPanel {
         shipmentTable.setModel(model);
         shipmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Set dropdown editor for Assignment Status column
         String[] statusOptions = {"Assigned", "Completed", "Canceled"};
         JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
         TableColumn statusColumn = shipmentTable.getColumnModel().getColumn(5);
@@ -159,5 +148,10 @@ public class AssignPanel extends JPanel {
 
     public JPanel getRootPanel() {
         return rootPanel;
+    }
+
+    // Method used in Main.java to refresh drivers when tab is selected
+    public void reloadDrivers() {
+        assignController.loadDrivers(driverComboBox);
     }
 }
